@@ -23,7 +23,7 @@ export class MovieMenuPage implements OnInit {
   }
 
   async openForm(activemovie: Movie = null) {
-    if (!this.auth.can('get:mvoies-detail')) {
+    if (!this.auth.can('get:mvoies')) {
       return;
     }
 

@@ -39,10 +39,11 @@ def create_app(test_config=None):
     # get actors
     @app.route('/actors', methods=['GET'])
     def get_actors():
-      actors = Actor.query.order_by(Actor.id).all()
+      actors_info = Actor.query.order_by(Actor.id).all()
+      actors = [actor.format() for actor in actors_info]
 
       # if there is no actor added
-      if len(actors) == 0:
+      if len(actors_info) == 0:
         abort(404)
 
       # retrun array of actors details
@@ -59,16 +60,17 @@ def create_app(test_config=None):
     # get movies
     @app.route('/movies', methods=['GET'])
     def get_movies():
-      movies = Movie.query.order_by(Movie.id).all()
+      movies_info = Movie.query.order_by(Movie.id).all()
+      movies = [movie.format() for movie in movies_info]
 
       # if there is no movie added
-      if len(movies) == 0:
+      if len(movies_info) == 0:
         abort(404)
 
       # retrun array of movies details
       return jsonify({
           'success': True,
-          'actors': movies
+          'movies': [movies]
       })
 
     '''
@@ -103,7 +105,7 @@ def create_app(test_config=None):
     '''
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movies')
-    def add_actor(actor):
+    def add_movie(actor):
       body = request.get_json()
       try:
         # Add new movie

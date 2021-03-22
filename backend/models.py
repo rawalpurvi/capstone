@@ -1,6 +1,7 @@
 import os
 import json
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from sqlalchemy import (
 Column,
 String,
@@ -28,6 +29,7 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
+    migrate = Migrate(app, db)
     db.create_all()
 
 
@@ -41,8 +43,8 @@ class Movie_Actor(db.Model):
     __tablename__ = 'movie_actor'
 
     id = db.Column(db.Integer, primary_key=True)
-    actor_id = db.Column(db.Integer, db.ForeignKey('actor.id', ondelete="CASCADE"), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id', ondelete="CASCADE"), nullable=False)
+    actor_id = db.Column(db.Integer, db.ForeignKey('actors.id', ondelete="CASCADE"), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id', ondelete="CASCADE"), nullable=False)
 
     def __repr__(self):
         return f'<Movie_Actor {self.id}>'
@@ -57,12 +59,14 @@ class Movie(db.Model):
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
+    actor_ids = Column(String)
     release_date = Column(Date)
     movie_actors = db.relationship('Movie_Actor', cascade="all, delete", backref='movies', lazy=True)
 
 
-    def __init__(self, title, release_date):
+    def __init__(self, title, release_date, actor_ids):
         self.title = title
+        self.actor_ids = actor_ids
         self.release_date = release_date
 
     def insert(self):
@@ -77,9 +81,17 @@ class Movie(db.Model):
         db.session.commit()
 
     def format(self):
+        actor_ids_values = self.actor_ids
+        actors = []
+        if(actor_ids_values):
+            actor_ids_array = actor_ids_values.replace("}","").replace("{","")
+            actor_ids = list(actor_ids_array.split(","))
+            actors_details = Actor.id.in_(actor_ids)
+            actors = json.loads(actors_details.name)
         return {
             'id': self.id,
             'title': self.title,
+            'actors': actors,
             'release_date': self.release_date
         }
 

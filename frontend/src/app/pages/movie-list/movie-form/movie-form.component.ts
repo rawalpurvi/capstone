@@ -24,7 +24,7 @@ export class MovieFormComponent implements OnInit {
         id: -1,
         title: '',
         release_date: '',
-        actor: []
+        actors: []
       };
       this.assignActor();
     }

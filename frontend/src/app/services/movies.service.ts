@@ -7,11 +7,8 @@ import { environment } from 'src/environments/environment';
 export interface Movie {
   id: number;
   title: string;
-  actor: Array<{
-          name: string,
-          gender: string,
-          age: number
-        }>;
+  release_date: string;
+  actor: string;
 }
 
 @Injectable({
@@ -34,20 +31,11 @@ export class MoviesService {
   }
 
   getMovies() {
-    if (this.auth.can('get:movies-detail')) {
-      this.http.get(this.url + '/movies-detail', this.getHeaders())
-      .subscribe((res: any) => {
-        this.moviesToItems(res.movies);
-        console.log(res);
-      });
-    } else {
-      this.http.get(this.url + '/movies', this.getHeaders())
-      .subscribe((res: any) => {
-        this.moviesToItems(res.movies);
-        console.log(res);
-      });
-    }
-
+    this.http.get(this.url + '/movies', this.getHeaders())
+    .subscribe((res: any) => {
+      this.moviesToItems(res.movies);
+      console.log(res);
+    });
   }
 
   saveMovie(movie: Movie) {
