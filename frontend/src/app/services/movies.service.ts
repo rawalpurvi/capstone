@@ -8,7 +8,11 @@ export interface Movie {
   id: number;
   title: string;
   release_date: string;
-  actor: string;
+  actor: Array<{
+          name: string,
+          age: number,
+          gender: string
+        }>;
 }
 
 @Injectable({
@@ -47,9 +51,11 @@ export class MoviesService {
         }
       });
     } else { // insert
+      alert(this.getHeaders());
       this.http.post(this.url + '/movies', movie, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
+          alert(res.movies);
           this.moviesToItems(res.movies);
           window.location.reload()
         }

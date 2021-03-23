@@ -5,11 +5,11 @@ import { MovieFormComponent } from './movie-form/movie-form.component';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-movie-menu',
-  templateUrl: './movie-menu.page.html',
-  styleUrls: ['./movie-menu.page.scss'],
+  selector: 'app-movie-list',
+  templateUrl: './movie-list.page.html',
+  styleUrls: ['./movie-list.page.scss'],
 })
-export class MovieMenuPage implements OnInit {
+export class MovieListPage implements OnInit {
   Object = Object;
 
   constructor(
@@ -23,7 +23,7 @@ export class MovieMenuPage implements OnInit {
   }
 
   async openForm(activemovie: Movie = null) {
-    if (!this.auth.can('get:mvoies')) {
+    if (!this.auth.can('get:movies')) {
       return;
     }
 

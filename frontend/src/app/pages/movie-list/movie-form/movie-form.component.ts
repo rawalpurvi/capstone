@@ -24,7 +24,7 @@ export class MovieFormComponent implements OnInit {
         id: -1,
         title: '',
         release_date: '',
-        actors: []
+        actor: []
       };
       this.assignActor();
     }
@@ -35,7 +35,7 @@ export class MovieFormComponent implements OnInit {
   }
 
   assignActor(i: number = 0) {
-    this.movie.actor.splice(i + 1, 0, {name: ''});
+    this.movie.actor.splice(i + 1, 0, {name: '', gender: ' ', age: 0 });
   }
 
   removeActor(i: number) {

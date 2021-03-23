@@ -81,18 +81,21 @@ class Movie(db.Model):
         db.session.commit()
 
     def format(self):
+        # Get actor details for the movie
         actor_ids_values = self.actor_ids
-        actors = []
+        actor = []
         if(actor_ids_values):
             actor_ids_array = actor_ids_values.replace("}","").replace("{","")
             actor_ids = list(actor_ids_array.split(","))
             actors_details = Actor.id.in_(actor_ids)
-            actors = json.loads(actors_details.name)
+            actor = [{'name': r['name'], 'age': r['age'], 'gender': r['gender']}
+                        for r in actors_details]
+        print(self.release_date)
         return {
             'id': self.id,
             'title': self.title,
-            'actors': actors,
-            'release_date': self.release_date
+            'release_date': self.release_date,
+            'actor': actor,
         }
 
 

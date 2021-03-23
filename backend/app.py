@@ -10,18 +10,18 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-    #CORS(app)
+    CORS(app)
 
     '''
     @ADD: Set up CORS. Allow '*' for origins.
     Delete the sample route after completing the TODOs
-    '''
+    
     # Set CORS
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    '''
+    
     @ADD: Use the after_request decorator to set Access-Control-Allow
-    '''
+    
     # set Access-Control-Allow
     @app.after_request
     def after_request(response):
@@ -30,6 +30,7 @@ def create_app(test_config=None):
       response.headers.add('Access-Control-Allow-Methods',
                           'GET,POST,PATCH,DELETE,OPTIONS')
       return response
+    '''
 
     '''
     @ADD:
@@ -70,7 +71,7 @@ def create_app(test_config=None):
       # retrun array of movies details
       return jsonify({
           'success': True,
-          'movies': [movies]
+          'movies': movies
       })
 
     '''
@@ -111,7 +112,8 @@ def create_app(test_config=None):
         # Add new movie
         new_title = body.get("title", None)
         new_release_date = body.get("release_date", None)
-        movie = Movie(title=new_title, release_date=new_release_date)
+        actor_ids = body.get("actor_ids", None)
+        movie = Movie(title=new_title, release_date=new_release_date, actor_ids=actor_ids)
         movie.insert()
         # Get inserted new movie details
         new_movie = Movie.query.order_by(Movie.id.desc()).limit(1).first()
@@ -185,7 +187,7 @@ def create_app(test_config=None):
               movie.release_date = release_date
           
           movie.update()
-          updated_movie = movie.long()
+          updated_movie = movie.format()
 
           return jsonify({
               'success': True,

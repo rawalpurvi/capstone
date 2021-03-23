@@ -5,14 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MovieMenuPage } from './movie-menu.page';
+import { MovieListPage } from './movie-list.page';
 import { MovieGraphicComponent } from './movie-graphic/movie-graphic.component';
 import { MovieFormComponent } from './movie-form/movie-form.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MovieMenuPage
+    component: MovieListPage
   }
 ];
 
@@ -24,6 +24,6 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   entryComponents: [MovieFormComponent],
-  declarations: [MovieMenuPage, MovieGraphicComponent, MovieFormComponent],
+  declarations: [MovieListPage, MovieGraphicComponent, MovieFormComponent],
 })
-export class MovieMenuPageModule {}
+export class MovieListPageModule {}
