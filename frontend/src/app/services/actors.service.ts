@@ -4,25 +4,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { environment } from 'src/environments/environment';
 
-export interface Movie {
+export interface Actor {
   id: number;
-  title: string;
-  release_date: string;
-  actor: Array<{
-          name: string,
-          age: number,
-          gender: string
-        }>;
+  name: string;
+  age: number;
+  gender: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class MoviesService {
+export class ActorsService {
 
   url = environment.apiServerUrl;
 
-  public items: {[key: number]: Movie} = {};
+  public items: {[key: number]: Actor} = {};
   
   constructor(private auth: AuthService, private http: HttpClient) { }
 
@@ -34,45 +30,45 @@ export class MoviesService {
     return header;
   }
 
-  getMovies() {
-    this.http.get(this.url + '/movies', this.getHeaders())
+  getActors() {
+    this.http.get(this.url + '/actors', this.getHeaders())
     .subscribe((res: any) => {
-      this.moviesToItems(res.movies);
+      this.actorsToItems(res.actors);
       console.log(res);
     });
   }
 
-  saveMovie(movie: Movie) {
-    if (movie.id >= 0) { // patch
-      this.http.patch(this.url + '/movies/' + movie.id, movie, this.getHeaders())
+  saveActor(actor: Actor) {
+    if (actor.id >= 0) { // patch
+      this.http.patch(this.url + '/actors/' + actor.id, actor, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
-          this.moviesToItems(res.movies);
+          this.actorsToItems(res.actors);
         }
       });
     } else { // insert
       alert(this.getHeaders());
-      this.http.post(this.url + '/movies', movie, this.getHeaders())
+      this.http.post(this.url + '/actors', actor, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
-          alert(res.movies);
-          this.moviesToItems(res.movies);
+          alert(res.actors);
+          this.actorsToItems(res.actors);
           window.location.reload()
         }
       });
     }
   }
 
-  deleteMovie(movie: Movie) {
-    delete this.items[movie.id];
-    this.http.delete(this.url + '/movies/' + movie.id, this.getHeaders())
+  deleteActor(actor: Actor) {
+    delete this.items[actor.id];
+    this.http.delete(this.url + '/actors/' + actor.id, this.getHeaders())
     .subscribe( (res: any) => {
     });
   }
 
-  moviesToItems( movies: Array<Movie>) {
-    for (const movie of movies) {
-      this.items[movie.id] = movie;
+  actorsToItems( actors: Array<Actor>) {
+    for (const actor of actors) {
+      this.items[actor.id] = actor;
     }
   }
 }

@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { MoviesService } from './services/movies.service';
+import { ActorsService } from './services/actors.service';
 import { AuthService } from './services/auth.service';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +31,7 @@ import { from } from 'rxjs';
     SplashScreen,
     AuthService,
     MoviesService,
+    ActorsService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

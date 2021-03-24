@@ -8,13 +8,24 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       { path: 'movie-list', loadChildren: '../movie-list/movie-list.module#MovieListPageModule' },
+      { path: 'actor-list', loadChildren: '../actor-list/actor-list.module#ActorListPageModule' },
       { path: 'user-page', loadChildren: '../user-page/user-page.module#UserPagePageModule' }, 
       {
         path: '',
         redirectTo: '/tabs/movie-list',
         pathMatch: 'full'
+      },
+      {
+        path: '',
+        redirectTo: '/tabs/actor-list',
+        pathMatch: 'full'
       }
     ]
+  },
+  {
+    path: '',
+    redirectTo: '/tabs/actor-list',
+    pathMatch: 'full'
   },
   {
     path: '',

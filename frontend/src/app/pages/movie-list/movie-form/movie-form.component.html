@@ -25,13 +25,11 @@
       <ion-item *ngFor="let assign of movie.actor; let i = index;  trackBy: customTrackBy">
         <ion-label>Actor Name: </ion-label>
         <ion-input [(ngModel)]="movie.actor[i].name" [name]="'Actor Name'+i"></ion-input>
-
         <ion-button (click)="removeActor(i)" [disabled]="(i==0 && movie.actor.length==1) || !auth.can('patch:movies')">Remove</ion-button><br />
-        <ion-button (click)="assignActor(i)" [disabled]="(!auth.can('patch:movies'))">Assign</ion-button><br />
-
+        <!--ion-button (click)="assignActor(i)" [disabled]="(!auth.can('patch:movies'))">Assign</ion-button><br /-->
       </ion-item>
 
-      <ion-button 
+      <ion-button
         [disabled]="!auth.can('delete:movies')"
         (click)="deleteClicked()">Delete</ion-button>
       <ion-button (click)="closeModal()">Cancel</ion-button>
