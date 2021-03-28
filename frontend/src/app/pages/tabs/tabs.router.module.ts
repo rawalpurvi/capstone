@@ -15,11 +15,6 @@ const routes: Routes = [
         redirectTo: '/tabs/movie-list',
         pathMatch: 'full'
       },
-      {
-        path: '',
-        redirectTo: '/tabs/actor-list',
-        pathMatch: 'full'
-      }
     ]
   },
   {

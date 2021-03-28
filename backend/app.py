@@ -112,11 +112,12 @@ def create_app(test_config=None):
         # Add new movie
         new_title = body.get("title", None)
         new_release_date = body.get("release_date", None)
-        actor_ids = body.get("actor_ids", None)
-        movie = Movie(title=new_title, release_date=new_release_date, actor_ids=actor_ids)
+        movie = Movie(title=new_title, release_date=new_release_date)
         movie.insert()
+
         # Get inserted new movie details
         new_movie = Movie.query.order_by(Movie.id.desc()).limit(1).first()
+
         return jsonify({
             'success': True,
             'movies': new_movie
@@ -152,7 +153,7 @@ def create_app(test_config=None):
               actor.age = age
 
           actor.update()
-          updated_actor = actor.long()
+          updated_actor = actor.format()
 
           return jsonify({
               'success': True,
@@ -174,10 +175,10 @@ def create_app(test_config=None):
       try:
           title = body.get("title", None)
           release_date = body.get("release_date", None)
+          actor_ids = body.get("selected_actors", None)
 
           # Update Movie
           movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
-
           if movie is None:
               abort(404)
 
@@ -188,6 +189,18 @@ def create_app(test_config=None):
           
           movie.update()
           updated_movie = movie.format()
+
+          # Check actors are already assigned
+          movie_actors = Movie_Actor.query.filter(Movie_Actor.movie_id == movie_id).all()
+          if movie_actors:
+              for movie_actor in movie_actors:
+                movie_actor.delete() 
+
+          # Set updated movie id and actor id in movie_actor table
+          if actor_ids:
+            for actor_id in actor_ids:
+                movie_actor = Movie_Actor(movie_id=movie_id, actor_id=actor_id)
+                movie_actor.insert()
 
           return jsonify({
               'success': True,

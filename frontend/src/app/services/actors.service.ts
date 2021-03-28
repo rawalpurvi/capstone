@@ -51,7 +51,6 @@ export class ActorsService {
       this.http.post(this.url + '/actors', actor, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
-          alert(res.actors);
           this.actorsToItems(res.actors);
           window.location.reload()
         }

@@ -23,23 +23,12 @@ export class MovieFormComponent implements OnInit {
       this.movie = {
         id: -1,
         title: '',
-        release_date: '',
-        actor: []
+        release_date: 'YYYY-MM-DD',
+        actors: [],
+        all_actors: [],
+        selected_actors: []
       };
-      this.assignActor();
     }
-  }
-
-  customTrackBy(index: number, obj: any): any {
-    return index;
-  }
-
-  assignActor(i: number = 0) {
-    this.movie.actor.splice(i + 1, 0, {name: '', gender: ' ', age: 0 });
-  }
-
-  removeActor(i: number) {
-    this.movie.actor.splice(i, 1);
   }
 
   closeModal() {

@@ -8,11 +8,18 @@ export interface Movie {
   id: number;
   title: string;
   release_date: string;
-  actor: Array<{
-          name: string,
-          age: number,
-          gender: string
+  actors: Array<{
+          id: number
         }>;
+  all_actors:Array<{
+              id: number,
+              name: string,
+              age: number,
+              gender: string
+        }>; 
+  selected_actors:Array<{
+                  id: number,
+            }>; 
 }
 
 @Injectable({
@@ -55,7 +62,6 @@ export class MoviesService {
       this.http.post(this.url + '/movies', movie, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
-          alert(res.movies);
           this.moviesToItems(res.movies);
           window.location.reload()
         }

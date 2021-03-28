@@ -1,5 +1,7 @@
 import os
 import json
+import babel
+from babel.dates import format_date
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import (
@@ -46,8 +48,17 @@ class Movie_Actor(db.Model):
     actor_id = db.Column(db.Integer, db.ForeignKey('actors.id', ondelete="CASCADE"), nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id', ondelete="CASCADE"), nullable=False)
 
-    def __repr__(self):
-        return f'<Movie_Actor {self.id}>'
+    def __init__(self, actor_id, movie_id):
+        self.actor_id = actor_id
+        self.movie_id = movie_id
+    
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
 '''
 Movie
@@ -59,14 +70,12 @@ class Movie(db.Model):
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    actor_ids = Column(String)
     release_date = Column(Date)
     movie_actors = db.relationship('Movie_Actor', cascade="all, delete", backref='movies', lazy=True)
 
 
-    def __init__(self, title, release_date, actor_ids):
+    def __init__(self, title, release_date):
         self.title = title
-        self.actor_ids = actor_ids
         self.release_date = release_date
 
     def insert(self):
@@ -81,21 +90,28 @@ class Movie(db.Model):
         db.session.commit()
 
     def format(self):
-        # Get actor details for the movie
-        actor_ids_values = self.actor_ids
-        actor = []
-        if(actor_ids_values):
-            actor_ids_array = actor_ids_values.replace("}","").replace("{","")
-            actor_ids = list(actor_ids_array.split(","))
-            actors_details = Actor.id.in_(actor_ids)
-            actor = [{'name': r['name'], 'age': r['age'], 'gender': r['gender']}
-                        for r in actors_details]
-        print(self.release_date)
+        #Get all actors detail
+        all_actors = []
+        all_actors_info = Actor.query.order_by(Actor.id).all()
+        all_actors = [all_actor.format() for all_actor in all_actors_info]
+
+        # Get actor detais for the movie
+        actors = []
+        selected_actors = []
+        actors_info = db.session.query(Actor.id).filter(Movie_Actor.movie_id == self.id, Movie_Actor.actor_id == Actor.id).order_by(Actor.id).all()
+        selected_actors = [str(actor.id) for actor in actors_info]
+        
+        # set release date in format
+        formatDate = "EEEE, dd MMMM YYYY"
+        format_release_date = babel.dates.format_date(self.release_date, formatDate)
+
         return {
             'id': self.id,
             'title': self.title,
-            'release_date': self.release_date,
-            'actor': actor,
+            'release_date': format_release_date,
+            'actors': actors,
+            'selected_actors': selected_actors,
+            'all_actors': all_actors
         }
 
 
