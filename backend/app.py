@@ -90,8 +90,11 @@ def create_app(test_config=None):
         new_gender = body.get("gender", None)
         actor = Actor(name=new_name, age=new_age, gender=new_gender)
         actor.insert()
+
         # Get inserted new actor details
         new_actor = Actor.query.order_by(Actor.id.desc()).limit(1).first()
+        new_actor = new_actor.format()
+
         return jsonify({
             'success': True,
             'actors': new_actor
@@ -117,6 +120,7 @@ def create_app(test_config=None):
 
         # Get inserted new movie details
         new_movie = Movie.query.order_by(Movie.id.desc()).limit(1).first()
+        new_movie = new_movie.format()
 
         return jsonify({
             'success': True,
@@ -131,7 +135,7 @@ def create_app(test_config=None):
     for actors.
     '''
     @app.route('/actors/<int:actor_id>', methods=['PATCH'])
-    @requires_auth('patch:actros')
+    @requires_auth('patch:actors')
     def update_actor(actor, actor_id):
       body = request.get_json()
       try:
@@ -157,7 +161,7 @@ def create_app(test_config=None):
 
           return jsonify({
               'success': True,
-              'drinks': [updated_actor]
+              'actors': [updated_actor]
           })
 
       except:

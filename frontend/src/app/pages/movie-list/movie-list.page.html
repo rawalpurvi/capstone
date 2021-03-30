@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar style="text-align: center">
+  <ion-toolbar style="text-align: center; background-color:#edcec0;">
     <ion-title><b>Casting Agency</b> Movies</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -24,10 +24,10 @@
      *ngFor="let movie of Object.keys(movies.items)"
      (click)="openForm(movies.items[movie])">
         <ion-card-header>
-          <ion-card-title>Title: {{movies.items[movie].title}}</ion-card-title>
+          <ion-card-title>Title:  <b>{{movies.items[movie].title}}</b></ion-card-title>
         </ion-card-header>
         <ion-card-header>
-          <ion-card-title>Release Date: {{movies.items[movie].release_date}}</ion-card-title>
+          <ion-card-title>Release Date:  {{movies.items[movie].release_date}}</ion-card-title>
         </ion-card-header>
       </ion-card>
 </div>

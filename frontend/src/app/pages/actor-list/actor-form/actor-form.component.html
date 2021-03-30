@@ -6,10 +6,13 @@
 </ion-header>
 
 <ion-content *ngIf="actor">
-    <form (ngSubmit)="logForm()">
-      <ion-item>
+  <form (ngSubmit)="!actorForm.valid && logForm()" name="actorForm" #actorForm="ngForm">
+    <ion-item>
         <ion-label>Actor Name: </ion-label>
-        <ion-input type="text" [(ngModel)]="actor.name" name="name"></ion-input>
+        <ion-input type="text" [(ngModel)]="actor.name" name="name" required></ion-input>
+        <div (ngMessages)="actorForm.name.errors" *ngIf="!actorForm.valid && actorForm.submitted">
+          <div (ngMessage)="required">Please enter Name for the Actor.</div>
+        </div>
       </ion-item>
 
       <ion-item>
@@ -22,13 +25,14 @@
         <ion-input type="text" [(ngModel)]="actor.gender" name="gender"></ion-input>
       </ion-item>
 
-      <ion-button
+      <ion-button 
+        [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+        (click)="saveClicked()" type="submit">Save</ion-button>
+      <ion-button *ngIf="!isNew"
         [disabled]="!auth.can('delete:actors')"
         (click)="deleteClicked()">Delete</ion-button>
       <ion-button (click)="closeModal()">Cancel</ion-button>
-      <ion-button 
-        [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
-        (click)="saveClicked()">Save</ion-button>
+      
 
     </form>
 </ion-content>

@@ -22,13 +22,13 @@
      *ngFor="let actor of Object.keys(actors.items)"
      (click)="openForm(actors.items[actor])">
         <ion-card-header>
-          <ion-card-title>Name: {{actors.items[actor].name}}</ion-card-title>
+          <ion-card-title>Name:  <b>{{actors.items[actor].name}}</b></ion-card-title>
         </ion-card-header>
         <ion-card-header>
-          <ion-card-title>Age: {{actors.items[actor].age}}</ion-card-title>
+          <ion-card-title>Age:  {{actors.items[actor].age}}</ion-card-title>
         </ion-card-header>
         <ion-card-header>
-          <ion-card-title>Gender: {{actors.items[actor].gender}}</ion-card-title>
+          <ion-card-title>Gender:  {{actors.items[actor].gender}}</ion-card-title>
         </ion-card-header>
       </ion-card>
 </div>

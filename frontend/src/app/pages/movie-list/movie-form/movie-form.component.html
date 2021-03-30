@@ -6,10 +6,13 @@
 </ion-header>
 
 <ion-content *ngIf="movie">
-    <form (ngSubmit)="logForm()">
+    <form (ngSubmit)="!movieForm.valid && logForm()" name="movieForm" #movieForm="ngForm">
       <ion-item>
         <ion-label>Movie Title: </ion-label>
-        <ion-input type="text" [(ngModel)]="movie.title" name="title"></ion-input>
+        <ion-input type="text" [(ngModel)]="movie.title" name="title" required></ion-input>
+        <div (ngMessages)="movieForm.title.errors" *ngIf="!movieForm.valid && movieForm.submitted">
+          <div (ngMessage)="required">Please enter Title for the Movie.</div>
+        </div>
       </ion-item>
 
       <ion-item>
@@ -18,19 +21,19 @@
       </ion-item>
 
       <ion-item *ngIf="!isNew">
-        <ion-label>Actors: </ion-label>
-        <ion-select multiple="true" [value]="movie.selected_actors" required="true" placeholder="Names" name="actors" [(ngModel)]="movie.selected_actors">
+        <ion-label>Assign Actors: </ion-label>
+        <ion-select multiple="true" [value]="movie.selected_actors" placeholder="Names" name="actors" [(ngModel)]="movie.selected_actors">
           <ion-select-option *ngFor="let actor of movie.all_actors" value="{{actor.id}}" >{{ actor.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
-      <ion-button
+      <ion-button 
+      [disabled]="!auth.can('patch:movies') && !auth.can('post:movies')"
+      (click)="saveClicked()" type="submit">Save</ion-button>
+      <ion-button *ngIf="!isNew"
         [disabled]="!auth.can('delete:movies')"
         (click)="deleteClicked()">Delete</ion-button>
       <ion-button (click)="closeModal()">Cancel</ion-button>
-      <ion-button 
-        [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
-        (click)="saveClicked()">Save</ion-button>
-
+     
     </form>
 </ion-content>

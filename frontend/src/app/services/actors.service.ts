@@ -47,12 +47,11 @@ export class ActorsService {
         }
       });
     } else { // insert
-      alert(this.getHeaders());
       this.http.post(this.url + '/actors', actor, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
           this.actorsToItems(res.actors);
-          window.location.reload()
+          window.location.reload();
         }
       });
     }
@@ -62,6 +61,7 @@ export class ActorsService {
     delete this.items[actor.id];
     this.http.delete(this.url + '/actors/' + actor.id, this.getHeaders())
     .subscribe( (res: any) => {
+      window.location.reload();
     });
   }
 

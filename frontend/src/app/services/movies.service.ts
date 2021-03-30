@@ -58,12 +58,11 @@ export class MoviesService {
         }
       });
     } else { // insert
-      alert(this.getHeaders());
       this.http.post(this.url + '/movies', movie, this.getHeaders())
       .subscribe( (res: any) => {
         if (res.success) {
           this.moviesToItems(res.movies);
-          window.location.reload()
+          window.location.reload();
         }
       });
     }

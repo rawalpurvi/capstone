@@ -34,8 +34,13 @@ export class ActorFormComponent implements OnInit {
   }
 
   saveClicked() {
-    this.actorService.saveActor(this.actor);
-    this.closeModal();
+    if(!this.actor.name){
+      return;
+    }
+    else{
+      this.actorService.saveActor(this.actor);
+      this.closeModal();
+    }
   }
 
   deleteClicked() {
