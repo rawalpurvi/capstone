@@ -28,7 +28,6 @@ export class MovieFormComponent implements OnInit {
         id: -1,
         title: '',
         release_date: this.datepipe.transform(this.myDate, 'yyyy-MM-dd'),
-        actors: [],
         all_actors: [],
         selected_actors: []
       };

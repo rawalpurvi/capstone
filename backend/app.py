@@ -109,7 +109,7 @@ def create_app(test_config=None):
     '''
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movies')
-    def add_movie(actor):
+    def add_movie(movie):
       body = request.get_json()
       try:
         # Add new movie
@@ -300,7 +300,15 @@ def create_app(test_config=None):
             "error": 400,
             "message": "bad request"
         }), 400
-    
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': 'method not allowed'
+        }), 405
+
     '''
     @ADD: implement error handlers using the @app.errorhandler(error) decorator
         each error handler should return (with approprate messages):

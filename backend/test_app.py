@@ -1,11 +1,15 @@
 import os
 import unittest
 import json
+import urllib.request
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, _request_ctx_stack, abort
+from functools import wraps
+from jose import jwt
 
 from app import create_app
-from models import setup_db, Actor, Movie
-
+from models import setup_db, Actor, Movie, Movie_Actor
+from auth import AuthError, requires_auth
 
 class CapstoneTestCase(unittest.TestCase):
     """This class represents the capstone test case"""
@@ -28,8 +32,8 @@ class CapstoneTestCase(unittest.TestCase):
 
         # Create New Movie
         self.new_movie = {
-            'title': 'Titenic',
-            'release_date': '1997-12-19'
+            'title': 'Air Force One',
+            'release_date': '1997-07-25'
         }
 
         # Create New Actor
@@ -38,6 +42,10 @@ class CapstoneTestCase(unittest.TestCase):
             'age': 46,
             'gender': 'Male'
         }
+
+        self.executive_producer_jwt = {'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxNTQxMjU0NzM4NDkxNzYxMTMxIiwiYXVkIjoiY2Fwc3RvbmVfYXBpIiwiaWF0IjoxNjE3MTIzMzI5LCJleHAiOjE2MTcyMDk3MjksImF6cCI6IjZUWTZ4YU9VWXZrUU5yZ2NTM1dSMGNsWHBXOTlJQkFNIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gWf1mPcTy9LjUJfPMnXdoGOw6VYPrvTfCZ2UVxmgcHJ3ogSoAxqOeuswBiUPKpSGjNznkAmZhJQvaWMNIEFRZ9vOwWrQ3z-JPjyt-lqIn7xokPmesR_0aoWvvcHXYF-BbkxjhAlbVKkoU6hmpFnekbm1cyxVq7djhF3jrQM3vTSfR5GJe24KQD2Nm8_CqbfoT1e6tHdSkgCPnzCuJk-MXzO1wagPzLFjgEszdop9MyV92U432RItkQbW3IMVRiFnKxt-ZXy7F3NucICPD9lh3c3kmRAq0Xbe-yEW5jsUkZqzaCPOklXmMB1TbcZ6WQgkEFunVJubm972U0H7V3M76w"}
+        self.casting_director_jwt = {'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYwMTg4ODNiNmU1MTlkMDA2OTMyOGE0NSIsImF1ZCI6ImNhcHN0b25lX2FwaSIsImlhdCI6MTYxNzE2NTIyNywiZXhwIjoxNjE3MjUxNjI3LCJhenAiOiI2VFk2eGFPVVl2a1FOcmdjUzNXUjBjbFhwVzk5SUJBTSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiXX0.ZUUIoY8Iq_r79NZswmCfx2W4cPtSVJnsiMrgMkczowScvc2zAfxITXqu1T6xYrwhUDarkHHriaWDyqeylq-GdmrkHmU_OKap-B3sAW0d33uB7s_o2oUJ-EqKw2VGxpVbqbut2Bp9r2Eo8mkfKybvQhc1qKXZhBSxqDRF9m38LjtHYsphObbWuzj9Eup5AEKe1feWVVtdgjn3Xp8B1x-ddD4cgdk3y-WqyybHZGYLrAeuGuYoYNce1yqIS3vVtwDHEs_rLaMafUgCAdxpWJRRTOv6c2Zt4w35ORmckT-xTW4IFfMlMcwpY-AJMSBoj2mot66wcbKSLtKsq8QqmtXjaA"}
+
 
     def tearDown(self):
         """Executed after reach test"""
@@ -59,12 +67,12 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['actors'])
 
-    def test_404_if_actor_not_found(self):
-        res = self.client().post('/actors/35')
+    def test_405_if_actor_not_found(self):
+        res = self.client().get('/actors/35')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
+        self.assertEqual(data['message'], 'method not allowed')
 
     # Run test to get Movies and Error occures
 
@@ -76,26 +84,26 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['movies'])
 
-    def test_404_if_movie_not_found(self):
-        res = self.client().post('/movies/35')
+    def test_405_if_movie_not_found(self):
+        res = self.client().get('/movies/35')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
+        self.assertEqual(data['message'], 'method not allowed')
 
     # Run test to add Actor and Error occures
 
     def test_add_new_actor(self):
-        res = self.client().post('/actors', json=self.new_actor)
+        res = self.client().post('/actors', json=self.new_actor, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['created'])
+        self.assertTrue(data['actors'])
         self.assertTrue(len(data['actors']))
 
     def test_405_if_actor_addition_not_allowed(self):
-        res = self.client().post('/actors/45', json=self.new_actor)
+        res = self.client().post('/actors/45', json=self.new_actor, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
@@ -104,16 +112,16 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to update Actor and Error occures
 
     def test_update_actor_age(self):
-        res = self.client().patch('actors/2', json={'age':46})
+        res = self.client().patch('actors/8', json={'age':46}, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
-        actor = Actor.query.filter(Actor.id == 2).one_or_none()
+        actor = Actor.query.filter(Actor.id == 8).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(actor.format()['age'], 46)
 
     def test_400_for_failed_actor_update(self):
-        res = self.client().patch('/actors/101')
+        res = self.client().patch('/actors/101', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
@@ -123,36 +131,43 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to delete Actor and Error occures
 
     def test_delete_actor(self):
-        res = self.client().delete('actors/5')
+        res = self.client().delete('actors/5', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         actor = Actor.query.filter(Actor.id == 5).one_or_none()
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 5)
-        self.assertTrue(data['total_actors'])
-        self.assertTrue(len(data['actors']))
+        self.assertEqual(data['delete'], 5)
         self.assertEqual(actor, None)
 
     def test_400_if_actor_does_not_exit(self):
-        res = self.client().delete('/actors/1000')
+        res = self.client().delete('/actors/1000', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
 
+    # Run test for Role base casting director doesn't have permission to add movie
+
+    def test_unauthorize_for_add_new_movie(self):
+        res = self.client().post('/movies', json=self.new_movie, headers=self.casting_director_jwt)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['description'], 'Permission not found.')
+
     # Run test to add Movie and Error occures
 
     def test_add_new_movie(self):
-        res = self.client().post('/movies', json=self.new_movie)
+        res = self.client().post('/movies', json=self.new_movie, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['created'])
+        self.assertTrue(data['movies'])
         self.assertTrue(len(data['movies']))
 
     def test_405_if_movie_addition_not_allowed(self):
-        res = self.client().post('/movies/45', json=self.new_movie)
+        res = self.client().post('/movies/45', json=self.new_movie, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
@@ -161,36 +176,59 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to update Movie and Error occures
 
     def test_update_movie_title(self):
-        res = self.client().patch('movies/2', json={'title':'Lord OF The Rings'})
+        res = self.client().patch('movies/6', json={'title':'Lord OF The Rings'}, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
-        movie = Movie.query.filter(Movie.id == 2).one_or_none()
+        movie = Movie.query.filter(Movie.id == 6).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(movie.format()['title'], 'Lord OF The Rings')
 
     def test_400_for_failed_movie_update(self):
-        res = self.client().patch('/movies/101')
+        res = self.client().patch('/movies/101', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
 
+    # Run test to assign Actors to the Movie
+
+    def test_assign_actors_to_movie(self):
+        res = self.client().patch('movies/6', json={'selected_actors':['10','11']}, headers=self.casting_director_jwt)
+        data = json.loads(res.data)
+        movie_actors = Movie_Actor.query.filter(Movie_Actor.movie_id == 6).all()
+        selected_actors = []
+        if movie_actors:
+            selected_actors = [str(movie_actor.actor_id) for movie_actor in movie_actors]
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(selected_actors, ['10','11'])
+
+    # Run test for Role base casting director doesn't have permission to delete movie
+
+    def test_unauthorize_for_delete_movie(self):
+        res = self.client().post('/movies', json=self.new_movie, headers=self.casting_director_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['description'], 'Permission not found.')
+
+
     # Run test to delete Movie and Error occures
 
     def test_delete_movie(self):
-        res = self.client().delete('movies/5')
+        res = self.client().delete('movies/5', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         movie = Movie.query.filter(Movie.id == 5).one_or_none()
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 5)
-        self.assertTrue(data['total_movies'])
-        self.assertTrue(len(data['movies']))
+        self.assertEqual(data['delete'], 5)
         self.assertEqual(movie, None)
 
     def test_400_if_movie_does_not_exit(self):
-        res = self.client().delete('/movies/1000')
+        res = self.client().delete('/movies/1000', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)

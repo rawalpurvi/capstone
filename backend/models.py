@@ -96,7 +96,6 @@ class Movie(db.Model):
         all_actors = [all_actor.format() for all_actor in all_actors_info]
 
         # Get actor detais for the movie
-        actors = []
         selected_actors = []
         actors_info = db.session.query(Actor.id).filter(Movie_Actor.movie_id == self.id, Movie_Actor.actor_id == Actor.id).order_by(Actor.id).all()
         selected_actors = [str(actor.id) for actor in actors_info]
@@ -109,7 +108,6 @@ class Movie(db.Model):
             'id': self.id,
             'title': self.title,
             'release_date': format_release_date,
-            'actors': actors,
             'selected_actors': selected_actors,
             'all_actors': all_actors
         }

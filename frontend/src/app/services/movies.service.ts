@@ -8,9 +8,6 @@ export interface Movie {
   id: number;
   title: string;
   release_date: string;
-  actors: Array<{
-          id: number
-        }>;
   all_actors:Array<{
               id: number,
               name: string,
