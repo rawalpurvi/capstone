@@ -1,8 +1,8 @@
-# Coffee Shop Frontend
+# Capstone Frontend
 
 ## Getting Setup
 
-> _tip_: this frontend is designed to work with [Flask-based Backend](../backend). It is recommended you stand up the backend first, test using Postman, and then the frontend should integrate smoothly.
+> _tip_: this frontend is designed to work with [Flask-based Backend](../backend). It is recommended you stand up the backend first, test, and then the frontend should integrate smoothly.
 
 ### Installing Dependencies
 
@@ -43,9 +43,9 @@ ionic serve
 >_tip_: Do not use **ionic serve**  in production. Instead, build Ionic into a build artifact for your desired platforms.
 [Checkout the Ionic docs to learn more](https://ionicframework.com/docs/cli/commands/build)
 
-## Key Software Design Relevant to Our Coursework
+## Key Software Design Relevant to Capstone
 
-The frontend framework is a bit beefy; here are the two areas to focus your study.
+The frontend framework is a bit beefy; here are the two areas to focus.
 
 ### Authentication
 
@@ -53,4 +53,4 @@ The authentication system used for this project is Auth0. `./src/services/auth.s
 
 ### Authorization
 
-The Auth0 JWT includes claims for permissions based on the user's role within the Auth0 system. This project makes use of these claims using the `auth.can(permission)` method which checks if particular permissions exist within the JWT permissions claim of the currently logged in user. This method is defined in  `./src/services/auth.service.ts` and is then used to enable and disable buttons in `./src/pages/movie-menu/movie-form/movie-form.html`.
+The Auth0 JWT includes claims for permissions based on the user's role within the Auth0 system. This project makes use of these claims using the `auth.can(permission)` method which checks if particular permissions exist within the JWT permissions claim of the currently logged in user. This method is defined in  `./src/services/auth.service.ts` and is then used to enable and disable buttons in `./src/pages/movie-list/movie-form/movie-form.html`.

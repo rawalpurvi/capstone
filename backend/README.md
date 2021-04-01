@@ -1,4 +1,4 @@
-# Coffee Shop Backend
+# Capstone Backend
 
 ## Getting Started
 
@@ -26,18 +26,33 @@ This will install all of the required packages we selected within the `requireme
 
 - [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
-- [SQLAlchemy](https://www.sqlalchemy.org/) and [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) are libraries to handle the lightweight sqlite database. Since we want you to focus on auth, we handle the heavy lift for you in `./src/database/models.py`. We recommend skimming this code first so you know how to interface with the Drink model.
+- [SQLAlchemy](https://www.sqlalchemy.org/) is library to handle the database. Model file can be found in `models.py`. 
 
 - [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
 
+## Database Setup
+With Postgres running, restore a database using the capstone.psql file provided. From the backend folder in terminal run:
+```bash
+psql capstone < capstone.psql
+```
+
+## Testing
+To run the tests, run
+```
+dropdb capstone_test
+createdb capsotne_test
+psql capstone_test < capstone.psql
+python3 test_app.py
+```
+
 ## Running the server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
+From within the `./backend` directory first ensure you are working using your created virtual environment.
 
 Each time you open a new terminal session, run:
 
 ```bash
-export FLASK_APP=api.py;
+export FLASK_APP=app.py;
 ```
 
 To run the server, execute:
@@ -47,8 +62,6 @@ flask run --reload
 ```
 
 The `--reload` flag will detect file changes and restart the server automatically.
-
-## Tasks
 
 ### Setup Auth0
 
@@ -60,26 +73,22 @@ The `--reload` flag will detect file changes and restart the server automaticall
         - Enable RBAC
         - Enable Add Permissions in the Access Token
 5. Create new API permissions:
-    - `get:drinks-detail`
-    - `post:drinks`
-    - `patch:drinks`
-    - `delete:drinks`
+    - `delete:actors`
+    - `delete:movies`
+    - `get:actors`
+    - `get:movies`
+    - `patch:actors`
+    - `patch:movies`
+    - `post:actors`
+    - `post:movies`
 6. Create new roles for:
-    - Barista
-        - can `get:drinks-detail`
-    - Manager
+    - Casting Director
+        - can perform all actions except `post:movies` and `delete:movies`
+    - Executive Producer
         - can perform all actions
-7. Test your endpoints with [Postman](https://getpostman.com). 
-    - Register 2 users - assign the Barista role to one and Manager role to the other.
-    - Sign into each account and make note of the JWT.
-    - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
-    - Right-clicking the collection folder for barista and manager, navigate to the authorization tab, and including the JWT in the token field (you should have noted these JWTs).
-    - Run the collection and correct any errors.
-    - Export the collection overwriting the one we've included so that we have your proper JWTs during review!
 
-### Implement The Server
-
-There are `@TODO` comments throughout the `./backend/src`. We recommend tackling the files in order and from top to bottom:
-
-1. `./src/auth/auth.py`
-2. `./src/api.py`
+### The Server
+Files are used to work the server.
+1. `auth.py`
+2. `app.py`
+3. `models.py`
