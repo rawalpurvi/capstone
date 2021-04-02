@@ -11,6 +11,7 @@ from app import create_app
 from models import setup_db, Actor, Movie, Movie_Actor
 from auth import AuthError, requires_auth
 
+
 class CapstoneTestCase(unittest.TestCase):
     """This class represents the capstone test case"""
 
@@ -43,9 +44,12 @@ class CapstoneTestCase(unittest.TestCase):
             'gender': 'Male'
         }
 
-        self.executive_producer_jwt = {'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxNTQxMjU0NzM4NDkxNzYxMTMxIiwiYXVkIjoiY2Fwc3RvbmVfYXBpIiwiaWF0IjoxNjE3MTIzMzI5LCJleHAiOjE2MTcyMDk3MjksImF6cCI6IjZUWTZ4YU9VWXZrUU5yZ2NTM1dSMGNsWHBXOTlJQkFNIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gWf1mPcTy9LjUJfPMnXdoGOw6VYPrvTfCZ2UVxmgcHJ3ogSoAxqOeuswBiUPKpSGjNznkAmZhJQvaWMNIEFRZ9vOwWrQ3z-JPjyt-lqIn7xokPmesR_0aoWvvcHXYF-BbkxjhAlbVKkoU6hmpFnekbm1cyxVq7djhF3jrQM3vTSfR5GJe24KQD2Nm8_CqbfoT1e6tHdSkgCPnzCuJk-MXzO1wagPzLFjgEszdop9MyV92U432RItkQbW3IMVRiFnKxt-ZXy7F3NucICPD9lh3c3kmRAq0Xbe-yEW5jsUkZqzaCPOklXmMB1TbcZ6WQgkEFunVJubm972U0H7V3M76w"}
-        self.casting_director_jwt = {'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYwMTg4ODNiNmU1MTlkMDA2OTMyOGE0NSIsImF1ZCI6ImNhcHN0b25lX2FwaSIsImlhdCI6MTYxNzE2NTIyNywiZXhwIjoxNjE3MjUxNjI3LCJhenAiOiI2VFk2eGFPVVl2a1FOcmdjUzNXUjBjbFhwVzk5SUJBTSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiXX0.ZUUIoY8Iq_r79NZswmCfx2W4cPtSVJnsiMrgMkczowScvc2zAfxITXqu1T6xYrwhUDarkHHriaWDyqeylq-GdmrkHmU_OKap-B3sAW0d33uB7s_o2oUJ-EqKw2VGxpVbqbut2Bp9r2Eo8mkfKybvQhc1qKXZhBSxqDRF9m38LjtHYsphObbWuzj9Eup5AEKe1feWVVtdgjn3Xp8B1x-ddD4cgdk3y-WqyybHZGYLrAeuGuYoYNce1yqIS3vVtwDHEs_rLaMafUgCAdxpWJRRTOv6c2Zt4w35ORmckT-xTW4IFfMlMcwpY-AJMSBoj2mot66wcbKSLtKsq8QqmtXjaA"}
-
+        self.executive_producer_jwt = {
+                    'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxNTQxMjU0NzM4NDkxNzYxMTMxIiwiYXVkIjoiY2Fwc3RvbmVfYXBpIiwiaWF0IjoxNjE3MzE4MjEzLCJleHAiOjE2MTc0MDQ2MTMsImF6cCI6IjZUWTZ4YU9VWXZrUU5yZ2NTM1dSMGNsWHBXOTlJQkFNIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.ZRlzZDx5CMzaGrO6WBa26lXVwWYPt3NxEE1GW_LdVzqYM6rYoz1l8puqY6bTIpKFdl5tnAH2u2OVHAU6ynJar7T2kvtcBg5DDNUz9QYtlEUhBlLnZ5i21qOgcMGzq0GnVloouLJcZvrwZE5Q3t36DpV51N-v1uthPQAK9bHXb6b5LYD8ogOzttdtRIyLGNDHINqwg7Lmi0799TkSOzmAfOQt0rGEZ09m4o0rKwfQK-2tQJsZgvtxbJd1pbWyrAd-8oYX_Hym0Qpyxip5rmeE0gJ9I-1bCWLDE08T1byEIZAGpDCwl8uKq-N2yxOK_V5wmqmmJ9qaQThugjTXNKZwGQ"
+                    }
+        self.casting_director_jwt = {
+                    'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYwMTg4ODNiNmU1MTlkMDA2OTMyOGE0NSIsImF1ZCI6ImNhcHN0b25lX2FwaSIsImlhdCI6MTYxNzMxODQwOSwiZXhwIjoxNjE3NDA0ODA5LCJhenAiOiI2VFk2eGFPVVl2a1FOcmdjUzNXUjBjbFhwVzk5SUJBTSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiXX0.BXKUyDPG_qOqbS-8msXouNpiRmgUP2e6iMShGM-v1UDzK9BJPk9VHFfRtndvJcPNJKy6fgd_sUoPh8Q3sqO4unVnzGRhR-0dbJvGQMOhFlm1SR_BqfNeR61TW224ZOQ8Zb2l8x-2RG9O2egJWyX4S3qRsq4oCfJsrQ9Sdom4ikqyfW0sMlASgTM6um7bEowA_VmFgIV_OivnEApKnS7j8KvYCxuQytKQb4GLQyq68lTtpDxw3kZvZuUZXGhRMksoPdFj8HMwYP6gk4aUQ3m4TcKb2uOUR9av5KNv2hwuzQodqE2SzZRXv98aUXuWWnyNpNYsEL6yxbbUOCgg3lW3sg"
+                    }
 
     def tearDown(self):
         """Executed after reach test"""
@@ -94,7 +98,8 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to add Actor and Error occures
 
     def test_add_new_actor(self):
-        res = self.client().post('/actors', json=self.new_actor, headers=self.executive_producer_jwt)
+        res = self.client().post('/actors', json=self.new_actor,
+                                 headers=self.executive_producer_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -103,7 +108,8 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(len(data['actors']))
 
     def test_405_if_actor_addition_not_allowed(self):
-        res = self.client().post('/actors/45', json=self.new_actor, headers=self.executive_producer_jwt)
+        res = self.client().post('/actors/45', json=self.new_actor,
+                                 headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
@@ -112,7 +118,8 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to update Actor and Error occures
 
     def test_update_actor_age(self):
-        res = self.client().patch('actors/8', json={'age':46}, headers=self.executive_producer_jwt)
+        res = self.client().patch(
+            'actors/8', json={'age': 46}, headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         actor = Actor.query.filter(Actor.id == 8).one_or_none()
 
@@ -121,17 +128,18 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(actor.format()['age'], 46)
 
     def test_400_for_failed_actor_update(self):
-        res = self.client().patch('/actors/101', headers=self.executive_producer_jwt)
+        res = self.client().patch(
+            '/actors/101', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
 
-
     # Run test to delete Actor and Error occures
 
     def test_delete_actor(self):
-        res = self.client().delete('actors/5', headers=self.executive_producer_jwt)
+        res = self.client().delete(
+            'actors/5', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         actor = Actor.query.filter(Actor.id == 5).one_or_none()
         self.assertEqual(res.status_code, 200)
@@ -140,25 +148,30 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(actor, None)
 
     def test_400_if_actor_does_not_exit(self):
-        res = self.client().delete('/actors/1000', headers=self.executive_producer_jwt)
+        res = self.client().delete(
+            '/actors/1000', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
 
-    # Run test for Role base casting director doesn't have permission to add movie
+    # Run test for Role base casting director doesn't have permission to add
+    # movie
 
     def test_unauthorize_for_add_new_movie(self):
-        res = self.client().post('/movies', json=self.new_movie, headers=self.casting_director_jwt)
+        res = self.client().post('/movies', json=self.new_movie,
+                                 headers=self.casting_director_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message']['description'], 'Permission not found.')
+        self.assertEqual(data['message']['description'],
+                         'Permission not found.')
 
     # Run test to add Movie and Error occures
 
     def test_add_new_movie(self):
-        res = self.client().post('/movies', json=self.new_movie, headers=self.executive_producer_jwt)
+        res = self.client().post('/movies', json=self.new_movie,
+                                 headers=self.executive_producer_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -167,7 +180,8 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(len(data['movies']))
 
     def test_405_if_movie_addition_not_allowed(self):
-        res = self.client().post('/movies/45', json=self.new_movie, headers=self.executive_producer_jwt)
+        res = self.client().post('/movies/45', json=self.new_movie,
+                                 headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
@@ -176,7 +190,9 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to update Movie and Error occures
 
     def test_update_movie_title(self):
-        res = self.client().patch('movies/6', json={'title':'Lord OF The Rings'}, headers=self.executive_producer_jwt)
+        res = self.client().patch('movies/6',
+                                  json={'title': 'Lord OF The Rings'},
+                                  headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         movie = Movie.query.filter(Movie.id == 6).one_or_none()
 
@@ -185,7 +201,8 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(movie.format()['title'], 'Lord OF The Rings')
 
     def test_400_for_failed_movie_update(self):
-        res = self.client().patch('/movies/101', headers=self.executive_producer_jwt)
+        res = self.client().patch(
+            '/movies/101', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
@@ -194,32 +211,43 @@ class CapstoneTestCase(unittest.TestCase):
     # Run test to assign Actors to the Movie
 
     def test_assign_actors_to_movie(self):
-        res = self.client().patch('movies/6', json={'selected_actors':['10','11']}, headers=self.casting_director_jwt)
+        res = self.client().patch(
+            'movies/6',
+            json={
+                'selected_actors': [
+                    '10',
+                    '11']},
+            headers=self.casting_director_jwt)
         data = json.loads(res.data)
-        movie_actors = Movie_Actor.query.filter(Movie_Actor.movie_id == 6).all()
+        movie_actors = Movie_Actor.query.filter(
+            Movie_Actor.movie_id == 6).all()
         selected_actors = []
         if movie_actors:
-            selected_actors = [str(movie_actor.actor_id) for movie_actor in movie_actors]
+            selected_actors = [str(movie_actor.actor_id)
+                               for movie_actor in movie_actors]
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(selected_actors, ['10','11'])
+        self.assertEqual(selected_actors, ['10', '11'])
 
-    # Run test for Role base casting director doesn't have permission to delete movie
+    # Run test for Role base casting director doesn't have permission to
+    # delete movie
 
     def test_unauthorize_for_delete_movie(self):
-        res = self.client().post('/movies', json=self.new_movie, headers=self.casting_director_jwt)
+        res = self.client().post('/movies', json=self.new_movie,
+                                 headers=self.casting_director_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message']['description'], 'Permission not found.')
-
+        self.assertEqual(data['message']['description'],
+                         'Permission not found.')
 
     # Run test to delete Movie and Error occures
 
     def test_delete_movie(self):
-        res = self.client().delete('movies/5', headers=self.executive_producer_jwt)
+        res = self.client().delete(
+            'movies/5', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         movie = Movie.query.filter(Movie.id == 5).one_or_none()
         self.assertEqual(res.status_code, 200)
@@ -228,13 +256,14 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(movie, None)
 
     def test_400_if_movie_does_not_exit(self):
-        res = self.client().delete('/movies/1000', headers=self.executive_producer_jwt)
+        res = self.client().delete(
+            '/movies/1000', headers=self.executive_producer_jwt)
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
 
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
-

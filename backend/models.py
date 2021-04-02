@@ -5,12 +5,12 @@ from babel.dates import format_date
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import (
-Column,
-String,
-Integer,
-Date,
-LargeBinary,
-create_engine
+    Column,
+    String,
+    Integer,
+    Date,
+    LargeBinary,
+    create_engine
 )
 
 
@@ -39,31 +39,45 @@ def setup_db(app, database_path=database_path):
 Actor_Movie
 
 '''
-# Implement many-to-many relationship using actor_movie with Actor and Movie tables
+# Implement many-to-many relationship using actor_movie with Actor and
+# Movie tables
+
 
 class Movie_Actor(db.Model):
     __tablename__ = 'movie_actor'
 
     id = db.Column(db.Integer, primary_key=True)
-    actor_id = db.Column(db.Integer, db.ForeignKey('actors.id', ondelete="CASCADE"), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id', ondelete="CASCADE"), nullable=False)
+    actor_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'actors.id',
+            ondelete="CASCADE"),
+        nullable=False)
+    movie_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'movies.id',
+            ondelete="CASCADE"),
+        nullable=False)
 
     def __init__(self, actor_id, movie_id):
         self.actor_id = actor_id
         self.movie_id = movie_id
-    
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
 
 '''
 Movie
 
 '''
+
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -71,8 +85,11 @@ class Movie(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     release_date = Column(Date)
-    movie_actors = db.relationship('Movie_Actor', cascade="all, delete", backref='movies', lazy=True)
-
+    movie_actors = db.relationship(
+        'Movie_Actor',
+        cascade="all, delete",
+        backref='movies',
+        lazy=True)
 
     def __init__(self, title, release_date):
         self.title = title
@@ -90,19 +107,24 @@ class Movie(db.Model):
         db.session.commit()
 
     def format(self):
-        #Get all actors detail
+        # Get all actors detail
         all_actors = []
         all_actors_info = Actor.query.order_by(Actor.id).all()
         all_actors = [all_actor.format() for all_actor in all_actors_info]
 
         # Get actor detais for the movie
         selected_actors = []
-        actors_info = db.session.query(Actor.id).filter(Movie_Actor.movie_id == self.id, Movie_Actor.actor_id == Actor.id).order_by(Actor.id).all()
+        actors_info = db.session.query(
+            Actor.id).filter(
+            Movie_Actor.movie_id == self.id,
+            Movie_Actor.actor_id == Actor.id).order_by(
+            Actor.id).all()
         selected_actors = [str(actor.id) for actor in actors_info]
-        
+
         # set release date in format
         formatDate = "EEEE, dd MMMM YYYY"
-        format_release_date = babel.dates.format_date(self.release_date, formatDate)
+        format_release_date = babel.dates.format_date(
+            self.release_date, formatDate)
 
         return {
             'id': self.id,
@@ -118,6 +140,7 @@ Actor
 
 '''
 
+
 class Actor(db.Model):
     __tablename__ = 'actors'
 
@@ -125,7 +148,11 @@ class Actor(db.Model):
     name = Column(String)
     gender = Column(String)
     age = Column(Integer)
-    movie_actors = db.relationship('Movie_Actor', cascade="all, delete", backref='actors', lazy=True)
+    movie_actors = db.relationship(
+        'Movie_Actor',
+        cascade="all, delete",
+        backref='actors',
+        lazy=True)
 
     def __init__(self, name, gender, age):
         self.name = name
