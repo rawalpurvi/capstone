@@ -19,9 +19,7 @@ class CapstoneTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "capstone_test"
-        self.database_path = "postgresql://{}@{}/{}".format(
-            'purvi', 'localhost:5432', self.database_name)
+        self.database_path = os.environ['DATABASE_TEST_URL']
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -45,10 +43,10 @@ class CapstoneTestCase(unittest.TestCase):
         }
 
         self.executive_producer_jwt = {
-                    'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxNTQxMjU0NzM4NDkxNzYxMTMxIiwiYXVkIjoiY2Fwc3RvbmVfYXBpIiwiaWF0IjoxNjE3MzE4MjEzLCJleHAiOjE2MTc0MDQ2MTMsImF6cCI6IjZUWTZ4YU9VWXZrUU5yZ2NTM1dSMGNsWHBXOTlJQkFNIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.ZRlzZDx5CMzaGrO6WBa26lXVwWYPt3NxEE1GW_LdVzqYM6rYoz1l8puqY6bTIpKFdl5tnAH2u2OVHAU6ynJar7T2kvtcBg5DDNUz9QYtlEUhBlLnZ5i21qOgcMGzq0GnVloouLJcZvrwZE5Q3t36DpV51N-v1uthPQAK9bHXb6b5LYD8ogOzttdtRIyLGNDHINqwg7Lmi0799TkSOzmAfOQt0rGEZ09m4o0rKwfQK-2tQJsZgvtxbJd1pbWyrAd-8oYX_Hym0Qpyxip5rmeE0gJ9I-1bCWLDE08T1byEIZAGpDCwl8uKq-N2yxOK_V5wmqmmJ9qaQThugjTXNKZwGQ"
+                    'Authorization': os.environ['PRODUCER_TOKEN']
                     }
         self.casting_director_jwt = {
-                    'Authorization': "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Il9oSUxRZEJwb0ZxVG9YLXdIbVB5ZiJ9.eyJpc3MiOiJodHRwczovL3B1cnZpLXVkYWNpdHkudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYwMTg4ODNiNmU1MTlkMDA2OTMyOGE0NSIsImF1ZCI6ImNhcHN0b25lX2FwaSIsImlhdCI6MTYxNzMxODQwOSwiZXhwIjoxNjE3NDA0ODA5LCJhenAiOiI2VFk2eGFPVVl2a1FOcmdjUzNXUjBjbFhwVzk5SUJBTSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmFjdG9ycyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiXX0.BXKUyDPG_qOqbS-8msXouNpiRmgUP2e6iMShGM-v1UDzK9BJPk9VHFfRtndvJcPNJKy6fgd_sUoPh8Q3sqO4unVnzGRhR-0dbJvGQMOhFlm1SR_BqfNeR61TW224ZOQ8Zb2l8x-2RG9O2egJWyX4S3qRsq4oCfJsrQ9Sdom4ikqyfW0sMlASgTM6um7bEowA_VmFgIV_OivnEApKnS7j8KvYCxuQytKQb4GLQyq68lTtpDxw3kZvZuUZXGhRMksoPdFj8HMwYP6gk4aUQ3m4TcKb2uOUR9av5KNv2hwuzQodqE2SzZRXv98aUXuWWnyNpNYsEL6yxbbUOCgg3lW3sg"
+                    'Authorization': os.environ['DIRECTOR_TOKEN']
                     }
 
     def tearDown(self):

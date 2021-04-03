@@ -13,10 +13,7 @@ from sqlalchemy import (
     create_engine
 )
 
-
-database_name = "capstone"
-database_path = "postgresql://{}@{}/{}".format(
-    'purvi', 'localhost:5432', database_name)
+database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
 
