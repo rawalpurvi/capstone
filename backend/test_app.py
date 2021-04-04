@@ -43,10 +43,10 @@ class CapstoneTestCase(unittest.TestCase):
         }
 
         self.executive_producer_jwt = {
-                    'Authorization': os.environ['PRODUCER_TOKEN']
+                    'Authorization': "Bearer $Token"
                     }
         self.casting_director_jwt = {
-                    'Authorization': os.environ['DIRECTOR_TOKEN']
+                    'Authorization': "Bearer $Token"
                     }
 
     def tearDown(self):
